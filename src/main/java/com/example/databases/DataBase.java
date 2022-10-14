@@ -17,12 +17,22 @@ public class DataBase {
         conn = DriverManager.getConnection(DB_URL,USER,PASS);
         stmt = conn.createStatement();
 
-        //stmt.execute("DROP DATABASE IF EXISTS db;");
-        //stmt.execute("CREATE DATABASE db;");
+//        stmt.execute("DROP DATABASE IF EXISTS db;");
+//        stmt.execute("CREATE DATABASE db;");
         stmt.execute("USE db;");
-        Price price = new Price();
-        System.out.println(price.getPrice(1));
 
+        Pizza pizza1 = new Pizza(1);
+        System.out.println("Pizza name: "+pizza1.getName());
+        System.out.println("price "+pizza1.getPrice());
+        System.out.println("Is vegetarian? "+ pizza1.isVegetarian());
+        System.out.println("Ingredients:");
+        for (int i = 0; i < pizza1.getIngredientsNames().length; i++) {
+            System.out.print(pizza1.getIngredientsNames()[i]+" ");
+        }
+
+        Dessert dessert = new Dessert(3);
+        System.out.println(dessert.getName());
+        System.out.println(dessert.getPrice());
 //        stmt.execute("CREATE TABLE IF NOT EXISTS Pizza(pizzaId INT NOT NULL PRIMARY KEY," +
 //                "name VARCHAR(30) NOT NULL)");
 //        stmt.execute("INSERT INTO pizza VALUES (1, 'pepperoni')");
@@ -72,18 +82,18 @@ public class DataBase {
 //        stmt.execute("INSERT INTO PizzaComposition VALUES(14, 5, 14)");
 //        stmt.execute("INSERT INTO PizzaComposition VALUES(15, 6, 10)");
 //
-//        stmt.execute("CREATE TABLE IF NOT EXISTS Drink(id INT NOT NULL PRIMARY KEY, name VARCHAR(30) NOT NULL)");
-//        stmt.execute("INSERT INTO Drink VALUES (1, 'regular cola')");
-//        stmt.execute("INSERT INTO Drink VALUES (2, 'zero cola')");
-//        stmt.execute("INSERT INTO Drink VALUES (3, 'sprite')");
-//        stmt.execute("INSERT INTO Drink VALUES (4, 'bitter lemon')");
-//        stmt.execute("INSERT INTO Drink VALUES (5, 'regular cola')");
+//        stmt.execute("CREATE TABLE IF NOT EXISTS Drink(id INT NOT NULL PRIMARY KEY, name VARCHAR(30) NOT NULL,price FLOAT NOT NULL)");
+//        stmt.execute("INSERT INTO Drink VALUES (1, 'regular cola',3.0)");
+//        stmt.execute("INSERT INTO Drink VALUES (2, 'zero cola',2.5)");
+//        stmt.execute("INSERT INTO Drink VALUES (3, 'sprite',3.0)");
+//        stmt.execute("INSERT INTO Drink VALUES (4, 'bitter lemon',2.8)");
+//        stmt.execute("INSERT INTO Drink VALUES (5, 'fanta',3.0)");
 //
-//        stmt.execute("CREATE TABLE IF NOT EXISTS Dessert(id INT NOT NULL PRIMARY KEY, name VARCHAR(30) NOT NULL)");
-//        stmt.execute("INSERT INTO Dessert VALUES (1, 'cheese cake')");
-//        stmt.execute("INSERT INTO Dessert VALUES (2, 'apple pie')");
-//        stmt.execute("INSERT INTO Dessert VALUES (3, 'milkshake')");
-//        stmt.execute("INSERT INTO Dessert VALUES (4, 'tiramisu')");
+//        stmt.execute("CREATE TABLE IF NOT EXISTS Dessert(id INT NOT NULL PRIMARY KEY, name VARCHAR(30) NOT NULL,price FLOAT NOT NULL)");
+//        stmt.execute("INSERT INTO Dessert VALUES (1, 'cheese cake',4.5)");
+//        stmt.execute("INSERT INTO Dessert VALUES (2, 'apple pie',3.8)");
+//        stmt.execute("INSERT INTO Dessert VALUES (3, 'milkshake',4.0)");
+//        stmt.execute("INSERT INTO Dessert VALUES (4, 'tiramisu',5.5)");
 //
 //        stmt.execute("CREATE TABLE IF NOT EXISTS PizzaOrder(orderId INT NOT NULL PRIMARY KEY, pizzaId INT NOT NULL)");
 //        stmt.execute("CREATE TABLE IF NOT EXISTS DrinkOrder(orderId INT NOT NULL PRIMARY KEY, pizzaId INT NOT NULL)");
@@ -95,7 +105,7 @@ public class DataBase {
 //
 //        stmt.execute("CREATE TABLE IF NOT EXISTS Delivery(id INT NOT NULL PRIMARY KEY, orderId INT NOT NULL)");
 //        stmt.execute("CREATE TABLE IF NOT EXISTS MainOrder(id INT NOT NULL PRIMARY KEY, custId INT NOT NULL)");
-//
+
 
     }
 }
