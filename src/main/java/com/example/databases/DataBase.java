@@ -21,18 +21,6 @@ public class DataBase {
 //        stmt.execute("CREATE DATABASE db;");
         stmt.execute("USE db;");
 
-        Pizza pizza1 = new Pizza(1);
-        System.out.println("Pizza name: "+pizza1.getName());
-        System.out.println("price "+pizza1.getPrice());
-        System.out.println("Is vegetarian? "+ pizza1.isVegetarian());
-        System.out.println("Ingredients:");
-        for (int i = 0; i < pizza1.getIngredientsNames().length; i++) {
-            System.out.print(pizza1.getIngredientsNames()[i]+" ");
-        }
-
-        Dessert dessert = new Dessert(3);
-        System.out.println(dessert.getName());
-        System.out.println(dessert.getPrice());
 //        stmt.execute("CREATE TABLE IF NOT EXISTS Pizza(pizzaId INT NOT NULL PRIMARY KEY," +
 //                "name VARCHAR(30) NOT NULL)");
 //        stmt.execute("INSERT INTO pizza VALUES (1, 'pepperoni')");
@@ -101,11 +89,26 @@ public class DataBase {
 //
 //        stmt.execute("CREATE TABLE IF NOT EXISTS Customer(id INT NOT NULL PRIMARY KEY, name VARCHAR(30) NOT NULL,"+
 //                " PhoneNumber INT NOT NULL, PostalCode VARCHAR(6) NOT NULL, StreetName VARCHAR(30) NOT NULL,"+
-//                " HouseNumber INT NOT NULL)");
+//                " HouseNumber INT NOT NULL, NumPizzasOrdered int NOT NULL)");
 //
 //        stmt.execute("CREATE TABLE IF NOT EXISTS Delivery(id INT NOT NULL PRIMARY KEY, orderId INT NOT NULL)");
 //        stmt.execute("CREATE TABLE IF NOT EXISTS MainOrder(id INT NOT NULL PRIMARY KEY, custId INT NOT NULL)");
 
 
+    }
+
+    public void test() throws SQLException, ClassNotFoundException {
+        Pizza pizza1 = new Pizza(1);
+        System.out.println("Pizza name: "+pizza1.getName());
+        System.out.println("price "+pizza1.getPrice());
+        System.out.println("Is vegetarian? "+ pizza1.isVegetarian());
+        System.out.println("Ingredients:");
+        for (int i = 0; i < pizza1.getIngredientsNames().length; i++) {
+            System.out.print(pizza1.getIngredientsNames()[i]+" ");
+        }
+
+        Dessert dessert = new Dessert(3);
+        System.out.println(dessert.getName());
+        System.out.println(dessert.getPrice());
     }
 }

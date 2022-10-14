@@ -23,14 +23,12 @@ public class Pizza {
 
         ResultSet rs1 = stmt.executeQuery("SELECT pizzaId, name FROM pizza");
         while (rs1.next())
-            if(rs1.getInt("pizzaId")==pizzaId)
-                name = rs1.getString("name");
+            if(rs1.getInt("pizzaId")==pizzaId)  { name = rs1.getString("name"); break; }
 
         ArrayList<Integer> list = new ArrayList<>();
         ResultSet rs2 = stmt.executeQuery("SELECT pizzaId, ingrId FROM PizzaComposition");
         while (rs2.next())
-            if(rs2.getInt("pizzaId")==pizzaId)
-                list.add(rs2.getInt("ingrId"));
+            if(rs2.getInt("pizzaId")==pizzaId)  { list.add(rs2.getInt("ingrId")); break; }
         ingredientsIds = list.stream().mapToInt(i->i).toArray();
 
         ArrayList<String> list1 = new ArrayList<>();
@@ -43,7 +41,6 @@ public class Pizza {
                     if(rs3.getBoolean("vega") == false)
                         isVegetarian = false;
                 }
-
         price = Math.round(price*1.4 *1.09 *100)/100;
         ingredientsNames = list1.toArray(new String[0]);
     }

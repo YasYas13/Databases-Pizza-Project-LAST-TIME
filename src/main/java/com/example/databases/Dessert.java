@@ -19,9 +19,9 @@ public class Dessert {
 
         ResultSet rs1 = stmt.executeQuery("SELECT id, name, price FROM dessert");
         while (rs1.next())
-            if(rs1.getInt("id")==dessertId) {
+            if(rs1.getInt("id") == dessertId) {
                 name = rs1.getString("name");
-                price = rs1.getFloat("price");
+                price = rs1.getFloat("price"); break;
             }
     }
 

@@ -1,4 +1,5 @@
 package com.example.databases;
 
-public class Menu {
+public class Order {
+
 }
