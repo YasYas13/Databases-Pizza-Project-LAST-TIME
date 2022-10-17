@@ -7,7 +7,7 @@ public class Drink {
     Statement stmt;
 
     private int drinkId;
-    private double price;
+    private float price;
     private String name;
 
 
@@ -19,17 +19,16 @@ public class Drink {
 
         this.drinkId = drinkId;
 
-        ResultSet rs1 = stmt.executeQuery("SELECT id, name, price FROM drink");
-        while (rs1.next())
-            if(rs1.getInt("id") == drinkId) {
+        ResultSet rs1 = stmt.executeQuery("SELECT id, name, price FROM drink WHERE id="+drinkId);
+        while (rs1.next()){
                 name = rs1.getString("name");
-                price = rs1.getFloat("price"); break;
-            }
+                price = rs1.getFloat("price");
+        }
     }
 
     // getters
     public String getName() { return name; }
-    public double getPrice() { return price; }
+    public float getPrice() { return price; }
     public int getDrinkId() { return drinkId; }
 }
 

@@ -21,18 +21,18 @@ public class Pizza {
 
         this.pizzaId = pizzaId;
 
-        ResultSet rs1 = stmt.executeQuery("SELECT pizzaId, name FROM pizza");
+        ResultSet rs1 = stmt.executeQuery("SELECT pizzaId, name FROM pizza WHERE pizzaid="+pizzaId);
         while (rs1.next())
-            if(rs1.getInt("pizzaId")==pizzaId)  { name = rs1.getString("name"); break; }
+            name = rs1.getString("name");
 
         ArrayList<Integer> list = new ArrayList<>();
-        ResultSet rs2 = stmt.executeQuery("SELECT pizzaId, ingrId FROM PizzaComposition");
+        ResultSet rs2 = stmt.executeQuery("SELECT pizzaId, ingrId FROM PizzaComposition WHERE pizzaid="+pizzaId);
         while (rs2.next())
-            if(rs2.getInt("pizzaId")==pizzaId)  { list.add(rs2.getInt("ingrId")); break; }
+            list.add(rs2.getInt("ingrId"));
         ingredientsIds = list.stream().mapToInt(i->i).toArray();
 
         ArrayList<String> list1 = new ArrayList<>();
-        ResultSet rs3 = stmt.executeQuery("SELECT id, price, name, vega FROM ingredients");
+        ResultSet rs3 = stmt.executeQuery("SELECT * FROM ingredients");
         while (rs3.next())
             // sum all ingredient prices to calculate pizza price, list all ingredient's names, determine if vega
             for (int i = 0; i < ingredientsIds.length; i++)

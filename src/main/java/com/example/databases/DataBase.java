@@ -14,21 +14,22 @@ public class DataBase {
 
     public DataBase() throws ClassNotFoundException, SQLException {
         Class.forName(JDBC_DRIVER);
-        System.out.println("connecting to the database");
         conn = DriverManager.getConnection(DB_URL,USER,PASS);
         stmt = conn.createStatement();
 
         dataBaseSetUp(true);
-        generateMenuItems();
-        generateOrderInfo();
+
     }
 
     public void dataBaseSetUp(boolean weNeedNewDB) throws SQLException {
-        if(weNeedNewDB){
+        if(false){
             stmt.execute("DROP DATABASE IF EXISTS db;");
             stmt.execute("CREATE DATABASE db;");
+
         }
         stmt.execute("USE db;");
+//        generateMenuItems();
+//        generateOrderInfo();
     }
 
     public void generateMenuItems() throws SQLException {
@@ -81,6 +82,18 @@ public class DataBase {
         stmt.execute("INSERT INTO PizzaComposition VALUES(13, 5, 8)");
         stmt.execute("INSERT INTO PizzaComposition VALUES(14, 5, 14)");
         stmt.execute("INSERT INTO PizzaComposition VALUES(15, 6, 10)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(16, 7, 4)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(17, 7, 16)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(18, 8, 2)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(19, 8, 15)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(20, 8, 13)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(21, 9, 12)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(22, 9, 14)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(23, 9, 11)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(24, 10, 3)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(25, 10, 7)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(26, 10, 8)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(27, 10, 15)");
 
         stmt.execute("CREATE TABLE IF NOT EXISTS Drink(id INT NOT NULL PRIMARY KEY, name VARCHAR(30) NOT NULL,price FLOAT NOT NULL)");
         stmt.execute("INSERT INTO Drink VALUES (1, 'regular cola',3.0)");
@@ -98,16 +111,17 @@ public class DataBase {
 
     public void generateOrderInfo() throws SQLException {
 
-        stmt.execute("CREATE TABLE IF NOT EXISTS PizzaOrder(orderId INT NOT NULL PRIMARY KEY, pizzaId INT NOT NULL)");
-        stmt.execute("CREATE TABLE IF NOT EXISTS DrinkOrder(orderId INT NOT NULL PRIMARY KEY, pizzaId INT NOT NULL)");
-        stmt.execute("CREATE TABLE IF NOT EXISTS DessertOrder(orderId INT NOT NULL PRIMARY KEY, pizzaId INT NOT NULL)");
+        stmt.execute("CREATE TABLE IF NOT EXISTS PizzaOrder(orderId INT NOT NULL, pizzaId INT NOT NULL)");
+        stmt.execute("CREATE TABLE IF NOT EXISTS DrinkOrder(orderId INT NOT NULL, drinkid INT NOT NULL)");
+        stmt.execute("CREATE TABLE IF NOT EXISTS DessertOrder(orderId INT NOT NULL, dessertid INT NOT NULL)");
 
         stmt.execute("CREATE TABLE IF NOT EXISTS Customer(id INT NOT NULL PRIMARY KEY, name VARCHAR(30) NOT NULL,"+
                 " PhoneNumber INT NOT NULL, PostalCode VARCHAR(6) NOT NULL, StreetName VARCHAR(30) NOT NULL,"+
                 " HouseNumber INT NOT NULL, NumPizzasOrdered int)");
 
         stmt.execute("CREATE TABLE IF NOT EXISTS Delivery(id INT NOT NULL PRIMARY KEY, orderId INT NOT NULL)");
-        stmt.execute("CREATE TABLE IF NOT EXISTS MainOrder(id INT NOT NULL PRIMARY KEY, custId INT NOT NULL)");
+        stmt.execute("CREATE TABLE IF NOT EXISTS MainOrder(id INT NOT NULL PRIMARY KEY, custId INT NOT NULL," +
+                "dateTime DATETIME NOT NULL)");
     }
 
     public void executeTests() throws SQLException, ClassNotFoundException {
@@ -129,25 +143,19 @@ public class DataBase {
 //        System.out.println(yas.getNumPizzasOrdered());
     }
 
-    public String[] getPizzas() throws SQLException {
-        ArrayList<String> list = new ArrayList<>();
-        ResultSet rs = stmt.executeQuery("SELECT name FROM pizza");
-        while (rs.next())
-            list.add(rs.getString("name"));
-        return list.toArray(new String[0]);
+    public int getMaxPizzaId() throws SQLException {
+        ResultSet rs = stmt.executeQuery("SELECT MAX(pizzaid) AS maxid FROM pizza");
+        if (rs.next()) return rs.getInt("maxid");
+        return 0;
     }
-    public String[] getDrinks() throws SQLException {
-        ArrayList<String> list = new ArrayList<>();
-        ResultSet rs = stmt.executeQuery("SELECT name FROM drink");
-        while (rs.next())
-            list.add(rs.getString("name"));
-        return list.toArray(new String[0]);
+    public int getMaxDrinkId() throws SQLException {
+        ResultSet rs = stmt.executeQuery("SELECT MAX(id) AS maxid FROM drink");
+        if (rs.next()) return rs.getInt("maxid");
+        return 0;
     }
-    public String[] getDesserts() throws SQLException {
-        ArrayList<String> list = new ArrayList<>();
-        ResultSet rs = stmt.executeQuery("SELECT name FROM dessert");
-        while (rs.next())
-            list.add(rs.getString("name"));
-        return list.toArray(new String[0]);
+    public int getMaxDessertId() throws SQLException {
+        ResultSet rs = stmt.executeQuery("SELECT MAX(id) AS maxid FROM dessert");
+        if (rs.next()) return rs.getInt("maxid");
+        return 0;
     }
 }

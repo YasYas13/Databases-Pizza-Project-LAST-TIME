@@ -1,9 +1,14 @@
 package com.example.databases;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.TimerTask;
+import java.util.Timer;
 
 public class Order {
     Connection conn;
@@ -13,13 +18,28 @@ public class Order {
     private boolean pizzaInOrder = false;
     private float totalPrice;
 
-    public Order() throws SQLException {
-        ResultSet rs = stmt.executeQuery("SELECT MAX(orderId) AS maxid FROM order");
-        if (rs.next()) orderId = rs.getInt("maxid") + 1;
-        else           orderId = 1;
+    // 0-10 = number of pizzas ordered
+    // 11 = discount after ordering 10 pizzas is used already, stop counting after 11
+    private int numPizzasOrdered = 0;
+
+    private boolean isOrderOutForDelivery = false;
+    private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    private LocalDateTime timeConfirmed;
+
+    public Order() throws SQLException, ClassNotFoundException {
+        conn = DriverManager.getConnection(DataBase.DB_URL,DataBase.USER,DataBase.PASS);
+        stmt = conn.createStatement();
+        Class.forName(DataBase.JDBC_DRIVER);
+
+        try {
+            ResultSet rs = stmt.executeQuery("SELECT MAX(id) AS maxid FROM mainorder");
+            orderId = rs.getInt("maxid") + 1;
+        }
+        catch (SQLException e) { orderId = 1; }
     }
 
     public void addPizza(int pizzaId) throws SQLException {
+        numPizzasOrdered++;
         // at least 1 pizza is in this order so change boolean to true
         if(!pizzaInOrder)
             pizzaInOrder = true;
@@ -39,26 +59,51 @@ public class Order {
     public float getTotalPrice() throws SQLException, ClassNotFoundException {
         float totalPrice = 0;
 
-        ResultSet rsPizza = stmt.executeQuery("SELECT * FROM pizzaOrder");
-        while (rsPizza.next())
-            if (rsPizza.getInt("orderId") == this.orderId){
-                Pizza pizza = new Pizza(rsPizza.getInt("pizzaId"));
-                totalPrice += pizza.getPrice();
-            }
-
-        ResultSet rsDrink = stmt.executeQuery("SELECT * FROM drinkOrder");
-        while (rsDrink.next())
-            if (rsDrink.getInt("orderId") == this.orderId){
-                Drink drink = new Drink(rsDrink.getInt("drinkId"));
-                totalPrice += drink.getPrice();
-            }
-
-        ResultSet rsDessert = stmt.executeQuery("SELECT * FROM dessertOrder");
-        while (rsDessert.next())
-            if (rsDessert.getInt("orderId") == this.orderId){
-                Dessert dessert = new Dessert(rsDessert.getInt("dessertId"));
-                totalPrice += dessert.getPrice();
-            }
+        ResultSet rsPizza = stmt.executeQuery("SELECT * FROM pizzaOrder WHERE orderid="+this.orderId);
+        while (rsPizza.next()) {
+            Pizza pizza = new Pizza(rsPizza.getInt("pizzaId"));
+            totalPrice += pizza.getPrice();
+        }
+        ResultSet rsDrink = stmt.executeQuery("SELECT * FROM drinkOrder WHERE orderid="+this.orderId);
+        while (rsDrink.next()) {
+            Drink drink = new Drink(rsDrink.getInt("drinkId"));
+            totalPrice += drink.getPrice();
+        }
+        ResultSet rsDessert = stmt.executeQuery("SELECT * FROM dessertOrder WHERE orderid="+this.orderId);
+        while (rsDessert.next()) {
+            Dessert dessert = new Dessert(rsDessert.getInt("dessertId"));
+            totalPrice += dessert.getPrice();
+        }
         return totalPrice;
+    }
+    Timer timer;
+    public void confirmOrder() throws SQLException {
+        timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("Order is out for delivery!");
+            }
+        };
+        timer.schedule(timerTask, 3000);
+        timeConfirmed = LocalDateTime.now();
+
+    }
+    public String[] getOrderedItems() throws SQLException, ClassNotFoundException {
+        ArrayList<String> list = new ArrayList<>();
+        ResultSet rsPizza = stmt.executeQuery("SELECT pizzaid FROM pizzaorder WHERE orderid="+this.orderId);
+        while (rsPizza.next())
+            list.add(new Pizza(rsPizza.getInt("pizzaid")).getName());
+        ResultSet rsDrink = stmt.executeQuery("SELECT drinkId FROM drinkOrder WHERE orderid="+this.orderId);
+        while (rsDrink.next())
+            list.add(new Drink(rsDrink.getInt("drinkId")).getName());
+        ResultSet rsDessert = stmt.executeQuery("SELECT dessertId FROM dessertOrder WHERE orderid="+this.orderId);
+        while (rsDessert.next())
+            list.add(new Dessert(rsDessert.getInt("dessertId")).getName());
+        return list.toArray(new String[0]);
+    }
+
+    public int getNumPizzasOrdered() {
+        return numPizzasOrdered;
     }
 }

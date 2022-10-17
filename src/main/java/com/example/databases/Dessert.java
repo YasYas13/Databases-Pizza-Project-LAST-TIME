@@ -7,10 +7,8 @@ public class Dessert {
     Statement stmt;
 
     private int dessertId;
-    private double price;
+    private float price;
     private String name;
-
-
 
     public Dessert(int dessertId) throws ClassNotFoundException, SQLException {
         conn = DriverManager.getConnection(DataBase.DB_URL, DataBase.USER, DataBase.PASS);
@@ -19,17 +17,16 @@ public class Dessert {
 
         this.dessertId = dessertId;
 
-        ResultSet rs1 = stmt.executeQuery("SELECT id, name, price FROM dessert");
-        while (rs1.next())
-            if(rs1.getInt("id") == dessertId) {
-                name = rs1.getString("name");
-                price = rs1.getFloat("price"); break;
-            }
+        ResultSet rs1 = stmt.executeQuery("SELECT id, name, price FROM dessert WHERE id="+dessertId);
+        while (rs1.next()) {
+            name = rs1.getString("name");
+            price = rs1.getFloat("price");
+        }
     }
 
     // getters
     public String getName() { return name; }
-    public double getPrice() { return price; }
-    public int getDrinkId() { return dessertId; }
+    public float getPrice() { return price; }
+    public int getDessertId() { return dessertId; }
 }
 
