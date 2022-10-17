@@ -14,6 +14,6 @@ public class HelloApplication {
     public static DataBase dataBase;
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        dataBase = new DataBase();
+        //dataBase = new DataBase();
     }
 }
