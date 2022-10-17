@@ -4,8 +4,8 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class Pizza {
-    Connection conn = null;
-    Statement stmt = null;
+    Connection conn;
+    Statement stmt;
 
     private int pizzaId;
     private double price;
@@ -34,26 +34,23 @@ public class Pizza {
         ArrayList<String> list1 = new ArrayList<>();
         ResultSet rs3 = stmt.executeQuery("SELECT id, price, name, vega FROM ingredients");
         while (rs3.next())
+            // sum all ingredient prices to calculate pizza price, list all ingredient's names, determine if vega
             for (int i = 0; i < ingredientsIds.length; i++)
                 if (rs3.getInt("id") == ingredientsIds[i]) {
                     price += rs3.getInt("price");
                     list1.add(rs3.getString("name"));
-                    if(rs3.getBoolean("vega") == false)
+                    if(!rs3.getBoolean("vega"))
                         isVegetarian = false;
                 }
         price = Math.round(price*1.4 *1.09 *100)/100;
         ingredientsNames = list1.toArray(new String[0]);
     }
 
+    // getters
     public String getName() { return name; }
-
     public double getPrice() { return price; }
-
     public int getPizzaId() { return pizzaId; }
-
     public boolean isVegetarian() { return isVegetarian; }
-
     public int[] getIngredientsIds() { return ingredientsIds; }
-
     public String[] getIngredientsNames() { return ingredientsNames; }
 }

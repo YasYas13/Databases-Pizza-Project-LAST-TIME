@@ -3,12 +3,14 @@ package com.example.databases;
 import java.sql.*;
 
 public class Drink {
-    Connection conn = null;
-    Statement stmt = null;
+    Connection conn;
+    Statement stmt;
 
     private int drinkId;
     private double price;
     private String name;
+
+
 
     public Drink(int drinkId) throws ClassNotFoundException, SQLException {
         conn = DriverManager.getConnection(DataBase.DB_URL, DataBase.USER, DataBase.PASS);
@@ -25,10 +27,9 @@ public class Drink {
             }
     }
 
+    // getters
     public String getName() { return name; }
-
     public double getPrice() { return price; }
-
     public int getDrinkId() { return drinkId; }
 }
 
