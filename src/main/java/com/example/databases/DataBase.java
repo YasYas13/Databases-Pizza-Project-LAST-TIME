@@ -1,6 +1,7 @@
 package com.example.databases;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class DataBase {
     static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
@@ -17,10 +18,9 @@ public class DataBase {
         conn = DriverManager.getConnection(DB_URL,USER,PASS);
         stmt = conn.createStatement();
 
-        dataBaseSetUp(false);
-        executeTests();
-        //generateMenuItems();
-        //generateOrderInfo();
+        dataBaseSetUp(true);
+        generateMenuItems();
+        generateOrderInfo();
     }
 
     public void dataBaseSetUp(boolean weNeedNewDB) throws SQLException {
@@ -127,5 +127,27 @@ public class DataBase {
 //        System.out.println(rs1.getInt("pizzaid"));
 //        Customer yas = new Customer("yasune", 6123, "6228gj", "holdaal", 45);
 //        System.out.println(yas.getNumPizzasOrdered());
+    }
+
+    public String[] getPizzas() throws SQLException {
+        ArrayList<String> list = new ArrayList<>();
+        ResultSet rs = stmt.executeQuery("SELECT name FROM pizza");
+        while (rs.next())
+            list.add(rs.getString("name"));
+        return list.toArray(new String[0]);
+    }
+    public String[] getDrinks() throws SQLException {
+        ArrayList<String> list = new ArrayList<>();
+        ResultSet rs = stmt.executeQuery("SELECT name FROM drink");
+        while (rs.next())
+            list.add(rs.getString("name"));
+        return list.toArray(new String[0]);
+    }
+    public String[] getDesserts() throws SQLException {
+        ArrayList<String> list = new ArrayList<>();
+        ResultSet rs = stmt.executeQuery("SELECT name FROM dessert");
+        while (rs.next())
+            list.add(rs.getString("name"));
+        return list.toArray(new String[0]);
     }
 }
