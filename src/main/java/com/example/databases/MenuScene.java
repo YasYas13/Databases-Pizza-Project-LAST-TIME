@@ -72,15 +72,12 @@ public class MenuScene {
         //the second panel on the "choose pizza" window,then we divided the second panel again into 4 parts.
         JPanel showPizza = new JPanel(new GridLayout(4,1));
         showPizza.setLocation(200,200);
-        //the first panel
         JLabel pizzaName=new JLabel("Pizza");
         pizzaName.setHorizontalAlignment(JLabel.CENTER);
         showPizza.add(pizzaName);
-        //the second panel
         JLabel pizzaPrice=new JLabel("Price");
         pizzaPrice.setHorizontalAlignment(JLabel.CENTER);
         showPizza.add(pizzaPrice);
-        //the third panel
         JLabel pizzaIngredients=new JLabel("Ingredients");
         pizzaIngredients.setHorizontalAlignment(JLabel.CENTER);
         showPizza.add(pizzaIngredients);
