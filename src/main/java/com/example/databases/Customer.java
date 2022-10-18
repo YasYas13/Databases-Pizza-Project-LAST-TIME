@@ -7,11 +7,11 @@ public class Customer {
     Statement stmt;
 
     private int id;
-    private String name;
-    private int phoneNumber;
-    private String postalCode;
-    private String streetName;
-    private int houseNumber;
+    private final String name;
+    private final int phoneNumber;
+    private final String postalCode;
+    private final String streetName;
+    private final int houseNumber;
 
     private boolean hasDiscount;
     private int numPizzasOrdered;
@@ -32,13 +32,16 @@ public class Customer {
         // search for exact identical customer info in table to check
         String search = "SELECT * FROM customer WHERE name = ' " + name + " ' AND phoneNumber = " + phoneNumber +
                 " AND postalCode = ' " + postalCode + " ' AND streetName = ' " + streetName + " ' AND houseNumber " +
-                "= " + houseNumber + " ";
+                "= " + houseNumber;
         ResultSet rs1 = stmt.executeQuery(search);
+        System.out.println(rs1.next());
         if(rs1.next()) {
             ResultSet rs = stmt.executeQuery("SELECT id, NumPizzasOrdered FROM (" + search +") AS thisCustInfo");
             while (rs.next()) {
                 id = rs.getInt("id");
-                numPizzasOrdered = rs.getInt("NumPizzasOrdered");
+                numPizzasOrdered = rs.getInt("NumPizzasOrdered") + order.getNumPizzasOrdered();
+                stmt.execute("UPDATE customer SET NumPizzasOrdered='" + numPizzasOrdered + "'" +
+                        "WHERE id='" + id + "'");
             }
             // if customer is applicable for discount after ordering 10 pizzas
             if (numPizzasOrdered >= 10) hasDiscount = true;

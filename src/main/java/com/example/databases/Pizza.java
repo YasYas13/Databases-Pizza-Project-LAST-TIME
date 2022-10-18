@@ -35,11 +35,11 @@ public class Pizza {
         ResultSet rs3 = stmt.executeQuery("SELECT * FROM ingredients");
         while (rs3.next())
             // sum all ingredient prices to calculate pizza price, list all ingredient's names, determine if vega
-            for (int i = 0; i < ingredientsIds.length; i++)
-                if (rs3.getInt("id") == ingredientsIds[i]) {
+            for (int ingredientsId : ingredientsIds)
+                if (rs3.getInt("id") == ingredientsId) {
                     price += rs3.getInt("price");
                     list1.add(rs3.getString("name"));
-                    if(!rs3.getBoolean("vega"))
+                    if (!rs3.getBoolean("vega"))
                         isVegetarian = false;
                 }
         price = Math.round(price*1.4 *1.09 *100)/100;

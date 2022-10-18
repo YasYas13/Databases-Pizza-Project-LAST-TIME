@@ -1,14 +1,11 @@
 package com.example.databases;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.TimerTask;
 import java.util.Timer;
+import java.util.TimerTask;
 
 public class Order {
     Connection conn;
@@ -31,11 +28,16 @@ public class Order {
         stmt = conn.createStatement();
         Class.forName(DataBase.JDBC_DRIVER);
 
-        try {
+//        try {
+//            System.out.println("test1");
             ResultSet rs = stmt.executeQuery("SELECT MAX(id) AS maxid FROM mainorder");
-            orderId = rs.getInt("maxid") + 1;
-        }
-        catch (SQLException e) { orderId = 1; }
+            if (rs.next()) orderId = rs.getInt("maxid") + 1;
+            else           orderId = 1;
+//        }
+//        catch (SQLException e) {
+//            System.out.println("test2");
+//            //orderId = 1;
+//        } // first order ever
     }
 
     public void addPizza(int pizzaId) throws SQLException {
@@ -59,17 +61,17 @@ public class Order {
     public float getTotalPrice() throws SQLException, ClassNotFoundException {
         float totalPrice = 0;
 
-        ResultSet rsPizza = stmt.executeQuery("SELECT * FROM pizzaOrder WHERE orderid="+this.orderId);
+        ResultSet rsPizza = stmt.executeQuery("SELECT * FROM pizzaOrder WHERE orderid="+orderId);
         while (rsPizza.next()) {
             Pizza pizza = new Pizza(rsPizza.getInt("pizzaId"));
             totalPrice += pizza.getPrice();
         }
-        ResultSet rsDrink = stmt.executeQuery("SELECT * FROM drinkOrder WHERE orderid="+this.orderId);
+        ResultSet rsDrink = stmt.executeQuery("SELECT * FROM drinkOrder WHERE orderid="+orderId);
         while (rsDrink.next()) {
             Drink drink = new Drink(rsDrink.getInt("drinkId"));
             totalPrice += drink.getPrice();
         }
-        ResultSet rsDessert = stmt.executeQuery("SELECT * FROM dessertOrder WHERE orderid="+this.orderId);
+        ResultSet rsDessert = stmt.executeQuery("SELECT * FROM dessertOrder WHERE orderid="+orderId);
         while (rsDessert.next()) {
             Dessert dessert = new Dessert(rsDessert.getInt("dessertId"));
             totalPrice += dessert.getPrice();
@@ -77,7 +79,7 @@ public class Order {
         return totalPrice;
     }
     Timer timer;
-    public void confirmOrder() throws SQLException {
+    public void confirmOrder() {
         timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -86,18 +88,24 @@ public class Order {
             }
         };
         timer.schedule(timerTask, 3000);
-        timeConfirmed = LocalDateTime.now();
 
+    }
+    public void completeOrder(Customer customer) throws SQLException {
+        //timeConfirmed = LocalDateTime.now();
+        ResultSet rs = stmt.executeQuery("SELECT CURRENT_TIMESTAMP as timeConfirmed");
+        if(rs.next())
+            stmt.execute("INSERT INTO mainorder VALUES ("+orderId+", "+customer.getId()+", "+
+                "NOW() )");
     }
     public String[] getOrderedItems() throws SQLException, ClassNotFoundException {
         ArrayList<String> list = new ArrayList<>();
-        ResultSet rsPizza = stmt.executeQuery("SELECT pizzaid FROM pizzaorder WHERE orderid="+this.orderId);
+        ResultSet rsPizza = stmt.executeQuery("SELECT pizzaid FROM pizzaorder WHERE orderid=" + orderId);
         while (rsPizza.next())
             list.add(new Pizza(rsPizza.getInt("pizzaid")).getName());
-        ResultSet rsDrink = stmt.executeQuery("SELECT drinkId FROM drinkOrder WHERE orderid="+this.orderId);
+        ResultSet rsDrink = stmt.executeQuery("SELECT drinkId FROM drinkOrder WHERE orderid=" + orderId);
         while (rsDrink.next())
             list.add(new Drink(rsDrink.getInt("drinkId")).getName());
-        ResultSet rsDessert = stmt.executeQuery("SELECT dessertId FROM dessertOrder WHERE orderid="+this.orderId);
+        ResultSet rsDessert = stmt.executeQuery("SELECT dessertId FROM dessertOrder WHERE orderid=" + orderId);
         while (rsDessert.next())
             list.add(new Dessert(rsDessert.getInt("dessertId")).getName());
         return list.toArray(new String[0]);

@@ -1,7 +1,6 @@
 package com.example.databases;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 public class DataBase {
     static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
@@ -12,24 +11,24 @@ public class DataBase {
     Connection conn;
     Statement stmt;
 
-    public DataBase() throws ClassNotFoundException, SQLException {
+    public DataBase(boolean firstTime) throws ClassNotFoundException, SQLException {
         Class.forName(JDBC_DRIVER);
         conn = DriverManager.getConnection(DB_URL,USER,PASS);
         stmt = conn.createStatement();
-
-        dataBaseSetUp(true);
+        dataBaseSetUp(firstTime);
 
     }
 
     public void dataBaseSetUp(boolean weNeedNewDB) throws SQLException {
-        if(false){
+        if(weNeedNewDB){
             stmt.execute("DROP DATABASE IF EXISTS db;");
             stmt.execute("CREATE DATABASE db;");
-
         }
         stmt.execute("USE db;");
-//        generateMenuItems();
-//        generateOrderInfo();
+        if (weNeedNewDB) {
+            generateMenuItems();
+            generateOrderInfo();
+        }
     }
 
     public void generateMenuItems() throws SQLException {
@@ -84,16 +83,17 @@ public class DataBase {
         stmt.execute("INSERT INTO PizzaComposition VALUES(15, 6, 10)");
         stmt.execute("INSERT INTO PizzaComposition VALUES(16, 7, 4)");
         stmt.execute("INSERT INTO PizzaComposition VALUES(17, 7, 16)");
-        stmt.execute("INSERT INTO PizzaComposition VALUES(18, 8, 2)");
-        stmt.execute("INSERT INTO PizzaComposition VALUES(19, 8, 15)");
-        stmt.execute("INSERT INTO PizzaComposition VALUES(20, 8, 13)");
-        stmt.execute("INSERT INTO PizzaComposition VALUES(21, 9, 12)");
-        stmt.execute("INSERT INTO PizzaComposition VALUES(22, 9, 14)");
-        stmt.execute("INSERT INTO PizzaComposition VALUES(23, 9, 11)");
-        stmt.execute("INSERT INTO PizzaComposition VALUES(24, 10, 3)");
-        stmt.execute("INSERT INTO PizzaComposition VALUES(25, 10, 7)");
-        stmt.execute("INSERT INTO PizzaComposition VALUES(26, 10, 8)");
-        stmt.execute("INSERT INTO PizzaComposition VALUES(27, 10, 15)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(18, 7, 9)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(19, 8, 2)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(20, 8, 15)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(21, 8, 13)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(22, 9, 12)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(23, 9, 14)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(24, 9, 11)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(25, 10, 3)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(26, 10, 7)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(27, 10, 8)");
+        stmt.execute("INSERT INTO PizzaComposition VALUES(28, 10, 15)");
 
         stmt.execute("CREATE TABLE IF NOT EXISTS Drink(id INT NOT NULL PRIMARY KEY, name VARCHAR(30) NOT NULL,price FLOAT NOT NULL)");
         stmt.execute("INSERT INTO Drink VALUES (1, 'regular cola',3.0)");
@@ -121,7 +121,7 @@ public class DataBase {
 
         stmt.execute("CREATE TABLE IF NOT EXISTS Delivery(id INT NOT NULL PRIMARY KEY, orderId INT NOT NULL)");
         stmt.execute("CREATE TABLE IF NOT EXISTS MainOrder(id INT NOT NULL PRIMARY KEY, custId INT NOT NULL," +
-                "dateTime DATETIME NOT NULL)");
+                "dateTime TIMESTAMP NOT NULL)");
     }
 
     public void executeTests() throws SQLException, ClassNotFoundException {
